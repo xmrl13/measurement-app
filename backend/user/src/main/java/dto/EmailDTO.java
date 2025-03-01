@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 public class EmailDTO {
 
-    @NotBlank(message = "Digite o email para ser deletado")
+    @NotBlank(message = "Digite o email")
     private String email;
 
 

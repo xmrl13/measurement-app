@@ -18,6 +18,12 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @GetMapping("/get-by-email")
+    public Mono<ResponseEntity<?>> getById(@RequestParam("email") String email, @RequestHeader("Authorization") String token) {
+        return userService.getUserByEmail(email, token);
+    }
+
+
     @PostMapping("/login")
     public Mono<ResponseEntity<String>> login(@RequestBody UserLoginRequest request) {
         return userService.authenticate(request);
