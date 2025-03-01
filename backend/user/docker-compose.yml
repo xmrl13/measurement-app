@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  user:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: user
+    ports:
+      - "${USER_SERVICE_PORT}:${USER_SERVICE_PORT}"
+    environment:
+      - SPRING_APPLICATION_NAME=user
+      - SERVER_PORT=${USER_SERVICE_PORT}
+      - SPRING_R2DBC_URL=r2dbc:postgresql://${USER_DB_HOST}:${USER_DB_PORT}/${USER_DB_NAME}?schema=app
+      - SPRING_R2DBC_USERNAME=${USER_DB_USERNAME}
+      - SPRING_R2DBC_PASSWORD=${USER_DB_PASSWORD}
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=${EUREKA_SERVER_URL}
+      - EUREKA_INSTANCE_PREFER_IP_ADDRESS=true
+      - EUREKA_INSTANCE_IP_ADDRESS=206.0.95.227
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS}
+      - JWT_SECRET=${GATEWAY_JWT_SECRET}
+    env_file:
+      - .env
+    depends_on:
+      - user-db
+    restart: always
+
+  user-db:
+    image: postgres:16
+    container_name: user-db
+    ports:
+      - "${USER_DB_PORT}:5432"
+    environment:
+      POSTGRES_DB: ${USER_DB_NAME}
+      POSTGRES_USER: ${USER_DB_USERNAME}
+      POSTGRES_PASSWORD: ${USER_DB_PASSWORD}
+      PGPORT: ${USER_DB_PORT}
+    env_file:
+      - .env
+    volumes:
+      - user_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: always
+
+volumes:
+  user_data:

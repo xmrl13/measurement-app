@@ -1,0 +1,27 @@
+version: "3.8"
+
+services:
+  gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: gateway
+    ports:
+      - "${EXPOSE_PORT}:8080"
+    environment:
+      - SPRING_APPLICATION_NAME=gateway
+      - SERVER_PORT=8080
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://${IP}:${EUREKA_PORT}/eureka/
+      - EUREKA_INSTANCE_PREFER_IP_ADDRESS=true
+      - EUREKA_INSTANCE_IP_ADDRESS=${IP}
+      - EUREKA_CLIENT_REGISTER_WITH_EUREKA=true
+      - EUREKA_CLIENT_FETCH_REGISTRY=true
+    env_file:
+      - .env
+
+    networks:
+      - minha-rede
+
+networks:
+  minha-rede:
+    driver: bridge

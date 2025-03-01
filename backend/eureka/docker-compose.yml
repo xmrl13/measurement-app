@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  eureka:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: eureka
+    ports:
+      - "${EXPOSE_PORT}:8761"
+    environment:
+      - SPRING_APPLICATION_NAME=eureka
+      - SERVER_PORT=${EXPOSE_PORT}
+
+      - EUREKA_CLIENT_REGISTER_WITH_EUREKA=false
+      - EUREKA_CLIENT_FETCH_REGISTRY=false
+      - EUREKA_SERVER_ENABLE_SELF_PRESERVATION=false
+
+      - EUREKA_INSTANCE_PREFER_IP_ADDRESS=true
+      - EUREKA_INSTANCE_IP_ADDRESS=${IP}
+      - EUREKA_INSTANCE_HOSTNAME=${IP}
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://${IP}:${EXPOSE_PORT}/eureka/
+
+      - LOGGING_LEVEL_COM_NETFLIX_EUREKA=DEBUG
+      - LOGGING_LEVEL_COM_NETFLIX_DISCOVERY=DEBUG
+      - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY=DEBUG
+      - LOGGING_LEVEL_SECURITY=DEBUG
+      - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_WEB=DEBUG
+      - LOGGING_LEVEL_REACTOR_NETTY=DEBUG
+    env_file:
+      - .env
+    restart: always
