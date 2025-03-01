@@ -25,6 +25,12 @@ services:
       - user-db
     restart: always
 
+    #deploy:
+      #resources:
+        #limits:
+          #cpus: "2"
+          #memory: "512M"
+
   user-db:
     image: postgres:16
     container_name: user-db

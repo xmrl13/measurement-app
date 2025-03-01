@@ -80,7 +80,7 @@ public class UserService {
                                         .body("Usuário com esse e-mail já existe"));
                             })
                             .switchIfEmpty(Mono.defer(() -> {
-                                log.info(" Criando novo usuário: {}", userRequestDTO.getEmail());
+                                log.info("Criando novo usuário: {}", userRequestDTO.getEmail());
 
                                 User user = new User();
                                 user.setName(userRequestDTO.getName());
@@ -92,7 +92,7 @@ public class UserService {
 
                                 return userRepository.save(user)
                                         .map(saved -> {
-                                            log.info("✅ Usuário criado com sucesso: {}", saved.getEmail());
+                                            log.info("Usuário criado com sucesso: {}", saved.getEmail());
                                             return ResponseEntity
                                                     .status(HttpStatus.CREATED)
                                                     .body("Usuário criado com sucesso");
@@ -107,7 +107,7 @@ public class UserService {
                                 .status(HttpStatus.REQUEST_TIMEOUT)
                                 .body("Tempo limite atingido. Tente novamente mais tarde."));
                     }
-                    log.error("🔥 Erro inesperado ao criar usuário: {}", throwable.getMessage(), throwable);
+                    log.error("Erro inesperado ao criar usuário: {}", throwable.getMessage(), throwable);
                     return Mono.just(ResponseEntity
                             .status(HttpStatus.INTERNAL_SERVER_ERROR)
                             .body("Erro ao criar usuário."));
